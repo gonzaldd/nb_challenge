@@ -13,13 +13,11 @@ import JsonViewer from './components/jsonViewer'
 const Main = () => {
   const [loading, setLoading] = useState(false)
   const [errMessage, setErrorMessage] = useState()
-  const [data, setData] = useState()
+  const [data, setData] = useState(false)
 
   const getData = async (url) => {
-    data && setData(null)
-    setLoading(true)
-
     try {
+      setLoading(true)
       setErrorMessage(null)
       const response = await fetch(
         (url || '').includes('https://') ? url : `https://${url}`
@@ -29,6 +27,7 @@ const Main = () => {
     } catch (err) {
       const errMessage = err.message || ''
 
+      setData(false)
       if (errMessage.includes('Network'))
         return setErrorMessage('La URL no es valida')
       if (errMessage.includes('JSON'))
