@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   StyleSheet,
   SafeAreaView,
@@ -11,6 +11,9 @@ import UrlInput from './components/urlInput'
 import JsonViewer from './components/jsonViewer'
 
 const Main = () => {
+  const [loading, setLoading] = useState(false)
+  const [errMessage, setErrorMessage] = useState()
+
   return (
     <View style={styles.container}>
       <ScrollView style={styles.fullWidth}>
@@ -18,7 +21,11 @@ const Main = () => {
           <StatusBar animated={true} barStyle="dark-content" />
         </SafeAreaView>
         <Text style={styles.title}>Challenge</Text>
-        <UrlInput />
+        <UrlInput
+          loading={loading}
+          errMessage={errMessage}
+          onPressButton={() => false}
+        />
         <JsonViewer />
       </ScrollView>
     </View>
