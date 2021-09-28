@@ -5,7 +5,6 @@ import PropTypes from 'prop-types'
 import JSONTree from 'react-native-json-tree'
 
 const JsonViewer = ({ data }) => {
-  console.log('JSONVIEWER render')
   return (
     <>
       {data && (
