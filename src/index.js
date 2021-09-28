@@ -13,6 +13,31 @@ import JsonViewer from './components/jsonViewer'
 const Main = () => {
   const [loading, setLoading] = useState(false)
   const [errMessage, setErrorMessage] = useState()
+  const [data, setData] = useState()
+
+  const getData = async (url) => {
+    data && setData(null)
+    setLoading(true)
+
+    try {
+      setErrorMessage(null)
+      const response = await fetch(
+        (url || '').includes('https://') ? url : `https://${url}`
+      )
+      if (response.status == 404) return setErrorMessage('404 not found')
+      setData(await response.json())
+    } catch (err) {
+      const errMessage = err.message || ''
+
+      if (errMessage.includes('Network'))
+        return setErrorMessage('La URL no es valida')
+      if (errMessage.includes('JSON'))
+        setErrorMessage('La respuesta no es JSON')
+      else setErrorMessage(errMessage)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -24,9 +49,9 @@ const Main = () => {
         <UrlInput
           loading={loading}
           errMessage={errMessage}
-          onPressButton={() => false}
+          onPressButton={getData}
         />
-        <JsonViewer />
+        <JsonViewer data={data} />
       </ScrollView>
     </View>
   )
