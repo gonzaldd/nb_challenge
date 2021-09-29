@@ -1,22 +1,34 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import PropTypes from 'prop-types'
 
-import JSONTree from 'react-native-json-tree'
-
 const JsonViewer = ({ data }) => {
+  const showJson = useCallback((jsonData) => {
+    let str = ''
+
+    function recursiveJson(json, deep = 0) {
+      let tabs = new Array(deep).fill('\t').join('')
+
+      Object.keys(json).map((key) => {
+        if (typeof json[key] === 'object') {
+          const isArr = Array.isArray(json[key])
+          str = str.concat(`${tabs}${key}${isArr ? '[]' : '{}'}: \n`)
+          recursiveJson(json[key], deep + 1)
+        } else {
+          str = str.concat(`${tabs}${key}: ${json[key]}\n`)
+        }
+      })
+    }
+    recursiveJson(jsonData)
+    return str
+  })
+
   return (
     <>
       {data && (
         <View style={styles.treeViewContainer}>
           <View style={styles.treeView}>
-            <JSONTree
-              data={data}
-              hideRoot={true}
-              theme={JsonTheme}
-              invertTheme={false}
-              shouldExpandNode={() => true}
-            />
+            <Text>{showJson(data)}</Text>
           </View>
         </View>
       )}
